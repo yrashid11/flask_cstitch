@@ -1,4 +1,8 @@
 __pycache__/
-instance/
 *.pyc
+*.db
+instance/
 .env
+.venv/
+*.stitch
+node_modules/

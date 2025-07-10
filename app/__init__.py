@@ -11,10 +11,17 @@ def create_app():
 
     db.init_app(app)
 
+    # Set up custom extensions if needed later
+    app.extensions['sqlalchemy'] = db
+
     with app.app_context():
         from . import routes  # Import AFTER app is created
         app.register_blueprint(routes.bp)
-        db.create_all()
+
+        # Create upload directory if not present
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+        # Ensure all tables are created
+        db.create_all()
 
     return app

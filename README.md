@@ -1,113 +1,83 @@
-# Flask SQLite Upload Template
+# Cross-Stitch Pattern Generator
 
-This is a starter Flask project template designed for rapid prototyping of web apps that:
-- Use **SQLite** for a lightweight database
-- Include a file **upload endpoint**
-- Support HTML rendering via **Jinja2 templates**
-- Use the **app factory pattern** for scalable structure
+🧵 A browser-based cross-stitch pattern editor with DMC thread color integration, grid editing, and local storage persistence.
 
----
+## ✨ Features
 
-## 🔧 Project Structure
+- 🎨 Select DMC thread colors and auto-assign symbols
+- 🧺 Active color palette with removable swatches
+- 🧱 Editable 20x20 stitch grid using chosen symbols
+- 💾 Persistent state via localStorage for grid and palette
+- 🗑 Clear grid button with confirmation
+- 🔍 Search/filter DMC threads by code, name, or hex
+
+## 🗂 Project Structure
 
 ```
-flask_template/
+flask_cstitch/
 ├── app/
-│   ├── __init__.py          # Initializes the Flask app and database
-│   ├── routes.py            # Defines all HTTP endpoints and Blueprint
-│   ├── models.py            # SQLAlchemy models (currently: Message)
+│   ├── __init__.py
+│   ├── routes.py
+│   ├── models.py
 │   ├── templates/
-│   │   └── messages.html    # HTML template to render messages
-│   └── uploads/             # Where uploaded files are stored
-│
+│   │   └── index.html
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   └── js/
+│   │       ├── app.js
+│   │       └── colors.js
+│   └── uploads/
+├── data/
+│   └── dmc_colors.json
 ├── instance/
-│   └── app.db               # SQLite database lives here (auto-created)
-│
-├── config.py                # App configuration (DB path, secret key, etc.)
-├── install.py               # One-time setup script to create tables & test data
-├── run.py                   # App entry point
-├── requirements.txt         # Dependencies
-└── README.md                # This file
+│   └── app.db
+├── install.py
+├── run.py
+└── config.py
 ```
+
+## 🧪 Local Development
+
+1. Create a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Initialize the database and load DMC colors:
+   ```bash
+   python install.py
+   ```
+
+4. Run the app:
+   ```bash
+   python run.py
+   ```
+
+5. Open in your browser: `http://localhost:5000`
+
+## 🗃 Data Sources
+
+- DMC Color Data: Converted from Wolfram's symbolic JSON export
+- Stored in `data/dmc_colors.json`
+
+## 📦 Dependencies
+
+- Flask
+- Flask-SQLAlchemy
+- SQLite (via SQLAlchemy)
+
+## 🔒 Notes
+
+- All grid and palette data is stored client-side in localStorage.
+- Symbols are limited to a predefined set and reused only when freed.
 
 ---
 
-## 🚀 Quickstart
-
-### 1. Clone the Repo and Set Up Environment
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 2. Run the Install Script
-This creates the database, tables, and inserts sample data:
-```bash
-python install.py
-```
-
-### 3. Start the Server
-```bash
-python run.py
-```
-
-Now visit: [http://localhost:5000/messages](http://localhost:5000/messages)
-
----
-
-## 📁 Upload Endpoint
-
-POST `/upload`
-
-**Form-Data:**
-```
-file=<your_file>
-```
-
-Allowed extensions: `png`, `jpg`, `jpeg`, `gif`, `pdf`, `txt`  
-Uploads go to `app/uploads/`
-
----
-
-## 🧱 Database Model
-
-The template includes a simple example model:
-
-```python
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
-```
-
-To inspect your SQLite DB, you can use:
-
-- PyCharm (Professional) Database tab
-- DB Browser for SQLite
-- DBeaver or TablePlus
-
----
-
-## 🧩 Notes
-
-- Blueprint pattern used for modular routing
-- Template rendering supported via `Jinja2`
-- Upload limit: 16 MB
-- Production deployment should use Gunicorn + Nginx
-
----
-
-## 🧼 Reset the Database (Optional)
-
-You can wipe the DB and re-run:
-
-```bash
-rm instance/app.db
-python install.py
-```
-
----
-
-## 📬 Contributing
-
-Feel free to fork or use this as a template repo on GitHub!
+Made with 🧡 for creative stitchers and developers alike.
