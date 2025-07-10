@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+  <title>Messages</title>
+</head>
+<body>
+  <h1>Messages from SQLite</h1>
+  <ul>
+    {% for message in messages %}
+      <li>{{ message.content }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
