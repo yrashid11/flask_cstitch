@@ -1,8 +1,17 @@
 const symbolPool = "!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split('');
 let usedSymbols = [];
 let selectedColors = [];
-let activePalette = [];  // Final palette used in grid
+//let activePalette = [];  // Final palette used in grid
+const toggleStored = localStorage.getItem("color_mode_enabled");
+const colorModeOn = toggleStored === "1";
 
+document.getElementById("toggle-view-mode").checked = colorModeOn;
+
+if (colorModeOn) {
+  document.querySelectorAll('.grid-cell').forEach(cell => {
+    cell.classList.add('color-mode');
+  });
+}
 function assignSymbol() {
   return symbolPool.find(s => !usedSymbols.includes(s));
 }
@@ -107,10 +116,18 @@ function renderSelectedPalette() {
       <small>${c.name}</small>
     `;
     swatch.addEventListener('click', () => {
+    if (swatch.classList.contains('selected')) {
+    swatch.classList.remove('selected');
+    selectedPalette = selectedPalette.filter(p => p.code !== c.code);
+  } else {
+    swatch.classList.add('selected');
+    selectedPalette.push(c);
+  }
       setActiveSymbol(c.symbol);
     });
-
-
+    if (selectedPalette.some(p => p.code === c.code)) {
+          swatch.classList.add('selected');
+        }
     container.appendChild(swatch);
   });
 }

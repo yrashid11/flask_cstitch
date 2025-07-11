@@ -6,36 +6,74 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>🧵 Cross-Stitch Pattern Editor</h1>
-    </header>
+<header>
+    <h1>🧵 Cross-Stitch Pattern Editor</h1>
+</header>
 
-    <main class="layout">
+<main class="app-layout">
+    <aside class="sidebar">
+        <button id="open-palette" class="btn">🎨 Choose Colors</button>
         <section class="palette-panel">
             <h2>🎨 Active Palette</h2>
-            <div id="active-palette" class="palette-grid"></div>
             <div id="active-symbol-display">Selected Symbol: <strong>(none)</strong></div>
-        </section>
+            <div id="active-palette" class="palette-grid"></div>
 
-        <section id="palette-modal" class="modal">
-            <h2>🧺 Build Your Palette</h2>
-            <input type="text" id="color-search" placeholder="Search DMC code, name, or hex..." />
-            <div id="color-list" class="palette-grid"></div>
 
-            <h3>Selected Colors</h3>
-            <div id="selected-palette" class="palette-grid"></div>
-            <button id="confirm-palette" class="btn">➕ Add to Palette</button>
-        </section>
+            <div id="tool-selector" class="tool-toggle">
 
-        <section id="grid-container">
-            <!-- your stitch grid will render here -->
-        </section>
-        <section id="grid-controls">
-            <button id="clear-grid" class="btn" onclick="clearGrid();">🗑 Clear Grid</button>
-        </section>
-    </main>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/colors.js') }}"></script>
+                <label class="tool-option">
+                    <input type="radio" name="tool" value="single" checked>
+                    <span>🟪</span>
+                </label>
+                <label class="tool-option">
+                    <input type="radio" name="tool" value="quad">
+                    <span>🟪🟪 <br>🟪🟪</span>
+                </label>
+                <label class="tool-option">
+                    <input type="radio" name="tool" value="mega">
+                    <span>🟪🟪🟪🟪🟪<br>🟪🟪🟪🟪🟪<br>🟪🟪🟪🟪🟪<br>🟪🟪🟪🟪🟪<br>🟪🟪🟪🟪🟪</span>
+                </label>
+            </div>
+
+            <label>
+                <input type="checkbox" id="toggle-view-mode"/>
+                🎨 Show colors instead of symbols
+            </label>
+
+            <div id="grid-controls">
+                <label>Grid Size:
+                    <input type="number" id="grid-size-input" min="5" max="100" value="25">
+                    <button id="resize-grid-btn" class="btn">Resize</button>
+                </label>
+                <button id="clear-grid" class="btn" onclick="clearGrid();">🗑 Clear Grid</button>
+                <button id="clear-palette" class="btn danger">🧹 Clear Palette</button>
+            </div>
+        </section>
+    </aside>
+
+    <section class="main-grid">
+        <div id="grid-container">
+            <!-- Grid renders here -->
+        </div>
+    </section>
+</main>
+
+<div id="palette-modal" class="modal hidden">
+    <div id="dmc-selector-panel">
+        <h2>Select DMC Colors</h2>
+        <input type="text" id="color-search" placeholder="Search DMC code, name, or hex..."/>
+
+        <div id="color-list"></div>
+
+        <h3>Preview Palette</h3>
+        <div id="selected-palette"></div>
+        <button id="confirm-palette" class="btn">➕ Add to Active Palette</button>
+        <button id="close-palette" class="btn">❌ Close</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/colors.js') }}"></script>
 </body>
 </html>
