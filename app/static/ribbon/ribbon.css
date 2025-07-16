@@ -302,6 +302,11 @@ body
 	margin: auto;
 }
 
+#ribbon .ribbon-icon-custom32{
+  width: 32px;
+  height: 32px;
+}
+
 #ribbon .ribbon-element-large .button-title
 {
 	clear: left;
