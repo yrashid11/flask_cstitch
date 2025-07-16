@@ -55,21 +55,6 @@ function renderColorList(colors) {
   });
 }
 
-function renderSelectedPalette() {
-  const container = document.getElementById('selected-palette');
-  container.innerHTML = '';
-  selectedColors.forEach(c => {
-    const swatch = document.createElement('div');
-    swatch.className = 'color-swatch selected';
-    swatch.innerHTML = `
-      <div style="background:${c.hex};width:40px;height:20px;border:1px solid #333;"></div>
-      <strong>${c.symbol}</strong>
-      <small>${c.code}</small>
-      <small>${c.name}</small>
-    `;
-    container.appendChild(swatch);
-  });
-}
 
 function setupSearch(colors) {
   document.getElementById('color-search').addEventListener('input', e => {
@@ -104,33 +89,39 @@ function renderSelectedPalette() {
   const container = document.getElementById('selected-palette');
   container.innerHTML = '';
 
+  // Persist selected color set
   localStorage.setItem("dmc_palette", JSON.stringify(selectedColors));
 
   selectedColors.forEach(c => {
     const swatch = document.createElement('div');
-    swatch.className = 'color-swatch selected';
+    swatch.className = 'swatch';
+
     swatch.innerHTML = `
-      <div style="background:${c.hex};width:40px;height:20px;border:1px solid #333;"></div>
-      <strong>${c.symbol}</strong>
-      <small>${c.code}</small>
-      <small>${c.name}</small>
+      <div class="swatch-main">
+        <div class="swatch-color" style="background-color: ${c.hex};"></div>
+        <div class="swatch-symbol">${c.symbol}</div>
+        <div class="swatch-code">${c.code}</div>
+        <button class="remove-color" title="Remove color">✖</button>
+      </div>
+      <div class="swatch-name">${c.name}</div>
     `;
-    swatch.addEventListener('click', () => {
-    if (swatch.classList.contains('selected')) {
-    swatch.classList.remove('selected');
-    selectedPalette = selectedPalette.filter(p => p.code !== c.code);
-  } else {
-    swatch.classList.add('selected');
-    selectedPalette.push(c);
-  }
-      setActiveSymbol(c.symbol);
+
+    // Remove color from selectedColors
+    swatch.querySelector('.remove-color').addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedColors = selectedColors.filter(p => p.code !== c.code);
+      renderSelectedPalette();
     });
-    if (selectedPalette.some(p => p.code === c.code)) {
-          swatch.classList.add('selected');
-        }
+
+    // Click to activate symbol
+    swatch.addEventListener('click', () => {
+      setActiveSymbol(c.symbol, c.hex);
+    });
+
     container.appendChild(swatch);
   });
 }
+
 
 function renderActivePalette(palette) {
   const container = document.getElementById('active-palette');
@@ -138,57 +129,58 @@ function renderActivePalette(palette) {
 
   palette.forEach(c => {
     const swatch = document.createElement('div');
-    swatch.className = 'color-swatch selected';
+    swatch.className = 'color-swatch';
+    swatch.title = c.name;
+    // 1. Color box with symbol
+    const colorBox = document.createElement('div');
+    colorBox.className = 'swatch-color-box';
+    colorBox.style.backgroundColor = c.hex;
 
-    // Color swatch
-    const preview = document.createElement('div');
-    preview.style.background = `${c.hex}`;
-    preview.style.width = '40px';
-    preview.style.height = '20px';
-    preview.style.border = '1px solid #333';
 
-    // Text elements
-    const symbolEl = document.createElement('strong');
-    symbolEl.textContent = c.symbol;
+    const symbol = document.createElement('div');
+    symbol.className = 'swatch-symbol-inside';
+    symbol.textContent = c.symbol;
+    colorBox.appendChild(symbol);
 
-    const codeEl = document.createElement('small');
-    codeEl.textContent = c.code;
+    // 2. Code display
+    const code = document.createElement('div');
+    code.className = 'swatch-code-box';
+    code.textContent = c.code;
 
-    const nameEl = document.createElement('small');
-    nameEl.textContent = c.name;
-
-    // Remove button
+    // 3. Remove button
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-color';
-    removeBtn.textContent = '🗑';
+    removeBtn.textContent = '✖';
     removeBtn.title = 'Remove color';
-    removeBtn.style.marginTop = '4px';
 
-    // Prevent click from activating symbol
-    removeBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-
-  // Remove the color from the palette and its symbol from usedSymbols
-  const updatedPalette = activePalette.filter(item => item.code !== c.code);
-  usedSymbols = usedSymbols.filter(sym => sym !== c.symbol);
-
-  // ✅ Update the global state
-  activePalette = updatedPalette;
-
-  // Save and re-render
-  localStorage.setItem("active_palette", JSON.stringify(activePalette));
-  renderActivePalette(activePalette);
+    removeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      activePalette = activePalette.filter(item => item.code !== c.code);
+      usedSymbols = usedSymbols.filter(sym => sym !== c.symbol);
+      localStorage.setItem("active_palette", JSON.stringify(activePalette));
+      renderActivePalette(activePalette);
     });
+
+    // Hidden tooltip with name (for later enhancement)
+    const tooltip = document.createElement('span');
+    tooltip.className = 'button-help';
+    tooltip.textContent = c.name;
+    swatch.appendChild(tooltip);
 
     // Click to activate symbol
     swatch.addEventListener('click', () => {
-      setActiveSymbol(c.symbol);
+      setActiveSymbol(c.symbol, c.hex);
     });
 
-    swatch.append(preview, symbolEl, codeEl, nameEl, removeBtn);
+    // Append all parts to the swatch
+    swatch.appendChild(colorBox);
+    swatch.appendChild(code);
+    swatch.appendChild(removeBtn);
+
     container.appendChild(swatch);
   });
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem("active_palette");
@@ -230,6 +222,32 @@ document.getElementById('confirm-palette').addEventListener('click', () => {
   //renderSelectedPalette();  // clear builder UI
 });
 
+
+//GET BLACK OR WHITE COLOR SELECTION
+function getContrastTextColor(hexcolor) {
+  // Remove '#' if present
+  if (hexcolor.startsWith('#')) {
+    hexcolor = hexcolor.slice(1);
+  }
+
+  // Handle shorthand hex codes (e.g., #F00 to #FF0000)
+  if (hexcolor.length === 3) {
+    hexcolor = hexcolor.split('').map(function (hex) {
+      return hex + hex;
+    }).join('');
+  }
+
+  // Convert hex to RGB values
+  const r = parseInt(hexcolor.substring(0, 2), 16);
+  const g = parseInt(hexcolor.substring(2, 4), 16);
+  const b = parseInt(hexcolor.substring(4, 6), 16);
+
+  // Calculate YIQ value (a measure of perceived brightness)
+  const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+  // Return 'black' for light colors and 'white' for dark colors
+  return (yiq >= 128) ? '#000' : '#fff';
+}
 
 
 

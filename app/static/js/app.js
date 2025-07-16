@@ -199,9 +199,12 @@ document.getElementById('toggle-view-mode').addEventListener('change', (e) => {
 });
 
 // === Active Symbol Setter ===
-function setActiveSymbol(symbol) {
+function setActiveSymbol(symbol,hex) {
   activeSymbol = symbol;
-  document.getElementById("active-symbol-display").textContent = `Selected Symbol: ${symbol}`;
+  document.getElementById("active-symbol-display").textContent = symbol;
+  document.getElementById("active-symbol-display").style.backgroundColor = hex;
+  document.getElementById("active-symbol-display").style.color = getContrastTextColor(hex);
+
 }
 
 // === Clear Grid ===
