@@ -210,19 +210,23 @@ function setActiveSymbol(symbol,hex) {
 // === Clear Grid ===
 function clearGrid() {
   if (!confirm("Are you sure you want to clear the entire grid?")) return;
+
+  // Reset both grid and savedGrid in memory
+  grid = [];
   for (let y = 0; y < rows; y++) {
+    grid[y] = [];
     for (let x = 0; x < cols; x++) {
       grid[y][x] = { symbol: '.', code: null };
-      const cell = document.querySelector(`.grid-cell[data-x="${x}"][data-y="${y}"]`);
-      if (cell) {
-        cell.textContent = '.';
-        cell.className = 'grid-cell';
-      }
     }
   }
+
+  // Remove saved data from localStorage
   localStorage.removeItem("cross_stitch_grid");
+
+  // Re-render grid cleanly from memory
   buildGrid();
 }
+
 
 // === Initialize Grid ===
 buildGrid();

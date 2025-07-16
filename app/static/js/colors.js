@@ -1,4 +1,5 @@
-const symbolPool = "!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split('');
+const symbolPool = "♚☄❈⚒♜☌✺☯✻⚛♠❂♬✶⚖⚗☢✽✪♞❁♛⚅✬☘♟❣⚯☃❖❀⚘❆♝⚗☍♣♩✯⚬⚭☤✷☥❇✧♣☁☂♛⚀♠☊✰✩☠✦✿☉☾⚔♞❃❋♟✫✶☚❅❢♜❊♝⚒❂⚃✮❁⚗♩☄❃☌☍☘☤".split('');
+const symbolPool_old = "!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split('');
 let usedSymbols = [];
 let selectedColors = [];
 //let activePalette = [];  // Final palette used in grid
@@ -88,6 +89,7 @@ async function initColorSelector() {
 function renderSelectedPalette() {
   const container = document.getElementById('selected-palette');
   container.innerHTML = '';
+  var cont_color;
 
   // Persist selected color set
   localStorage.setItem("dmc_palette", JSON.stringify(selectedColors));
@@ -95,11 +97,11 @@ function renderSelectedPalette() {
   selectedColors.forEach(c => {
     const swatch = document.createElement('div');
     swatch.className = 'swatch';
-
+    cont_color = getContrastTextColor(c.hex);
     swatch.innerHTML = `
       <div class="swatch-main">
         <div class="swatch-color" style="background-color: ${c.hex};"></div>
-        <div class="swatch-symbol">${c.symbol}</div>
+        <div class="swatch-symbol" style="color: ${cont_color}">${c.symbol}</div>
         <div class="swatch-code">${c.code}</div>
         <button class="remove-color" title="Remove color">✖</button>
       </div>
@@ -135,11 +137,13 @@ function renderActivePalette(palette) {
     const colorBox = document.createElement('div');
     colorBox.className = 'swatch-color-box';
     colorBox.style.backgroundColor = c.hex;
+    colorBox.style.color = getContrastTextColor(c.hex);
 
 
     const symbol = document.createElement('div');
     symbol.className = 'swatch-symbol-inside';
     symbol.textContent = c.symbol;
+    symbol.style.color = getContrastTextColor(c.hex);
     colorBox.appendChild(symbol);
 
     // 2. Code display
