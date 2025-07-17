@@ -4,14 +4,32 @@
     <meta charset="UTF-8">
     <title>Cross-Stitch Pattern Generator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='ribbon/ribbon.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='ribbon/soft_button.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Style_1.css') }}">
+<!--
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+-->
+
+<link rel="stylesheet" href="{{ url_for('static', filename='ribbon/soft_button.css') }}">
+
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/toolbar.css') }}">
 </head>
 <body bgcolor="#c9cdd2">
+
 <div id="ribbon">
+    <div id="day-night" class="toggle-wrapper">
+    <label class="toggle-switch">
+        <input type="checkbox" id="iconToggle">
+        <div class="switch-body">
+            <span class="icon sun">🌞</span>
+            <span class="icon moon">🌙</span>
+        </div>
+    </label>
+</div>
     <div class="logo-container">
-    <img src="{{ url_for('static', filename='css/logo1.png') }}" alt="Stitch Witch Logo">
+        <img src="{{ url_for('static', filename='css/logo1.png') }}" alt="Stitch Witch Logo">
     </div>
     <span class="ribbon-window-title">🧵 Cross-Stitch Pattern Editor</span>
 
@@ -120,17 +138,20 @@
             <span class="section-title">Select Size</span>
             <label class="tool-option ribbon-button ribbon-button-large">
                 <input type="radio" name="tool" value="single" checked>
-                <span class="ribbon-icon ribbon-normal">🟪</span>
+                <img class="ribbon-icon ribbon-normal ribbon-icon-custom32"
+                     src="{{ url_for('static', filename='ribbon/icons/custom/icon_1x1.png') }}"/>
                 <span class="button-help">Select a single square.</span>
             </label>
             <label class="tool-option ribbon-button ribbon-button-large">
                 <input type="radio" name="tool" value="quad">
-                <span class="ribbon-icon ribbon-normal">🟪🟪 <br>🟪🟪</span>
+                <img class="ribbon-icon ribbon-normal ribbon-icon-custom32"
+                     src="{{ url_for('static', filename='ribbon/icons/custom/icon_2x2.png') }}"/>
                 <span class="button-help">Select a 2 x 2 area</span>
             </label>
             <label class="tool-option ribbon-button ribbon-button-large">
                 <input type="radio" name="tool" value="mega">
-                <span class="ribbon-icon ribbon-normal">🟪🟪🟪<br>🟪🟪🟪<br>🟪🟪🟪</span>
+                 <img class="ribbon-icon ribbon-normal ribbon-icon-custom32"
+                     src="{{ url_for('static', filename='ribbon/icons/custom/icon_5x5.png') }}"/>
                 <span class="button-help">Select a 5 x 5 area</span>
             </label>
         </div>
@@ -169,8 +190,8 @@
         <span class="ribbon-title">Colors</span>
         <div class="ribbon-section">
             <!--<span class="section-title">Choose Symbol</span>-->
-             <div class="ribbon-button ribbon-button-large">
-                <span class="button-title" id="open-palette">Choose Colors</span>
+            <div class="ribbon-button ribbon-button-large" id="open-palette">
+                <span class="button-title">Choose Colors</span>
                 <span class="button-help">This button will save your document.</span>
                 <img class="ribbon-icon ribbon-normal ribbon-icon-custom32"
                      src="{{ url_for('static', filename='ribbon/icons/custom/color-palette.png') }}"/>
@@ -178,14 +199,15 @@
             <div class="ribbon-element ribbon-element-large active-symbol-box palette-tool">
                 <span class="button-help">This is your currently selected symbol</span>
                 <span class="active-symbol-title">Active</span>
-                <span id="active-symbol-display" class="selected-symbol ribbon-icon ribbon-normal"><strong>∅</strong></span>
+                <span id="active-symbol-display"
+                      class="selected-symbol ribbon-icon ribbon-normal"><strong>∅</strong></span>
 
             </div>
             <div id="palette-dropdown" class="ribbon-element ribbon-element-large palette-tool">
-<!--
-                    <button id="close-palette-dropdown" class="close-dropdown-btn">✖</button>
--->
-                    <div id="active-palette" class="ribbon-palette-grid"></div>
+                <!--
+                                    <button id="close-palette-dropdown" class="close-dropdown-btn">✖</button>
+                -->
+                <div id="active-palette" class="ribbon-palette-grid"></div>
             </div>
         </div>
         <div class="ribbon-section">
@@ -194,53 +216,47 @@
                 <label class="toggle-switch" for="toggle-view-mode" style="cursor: pointer;">
                     <input type="checkbox" id="toggle-view-mode"/>
                     <div class="switch-body">
-                            <span class="icon sun">📜</span>
-                            <span class="icon moon">🎨</span>
-                        </div>
+                        <span class="icon sun">📜</span>
+                        <span class="icon moon">🎨</span>
+                    </div>
                 </label>
             </div>
         </div>
     </div>
 </div>
-
-<div class="page">
-    <section class="main-grid">
-        <div id="grid-container">
-            <!-- Grid renders here -->
+<main id="app-wrapper" class="app-layout">
+    <div id="palette-modal" class="modal hidden drawer">
+    <div id="dmc-selector-panel">
+        <div id="drawer-toggle" class="drawer-tab">
+            <span class="arrow">⮞</span>
         </div>
-    </section>
-</div>
 
-<main class="app-layout">
-    <span class="button-title">🎨 Palette</span>
-    <span class="button-help">Currently selected color symbol</span>
+        <div id="color-list"></div>
 
-    <div class="toggle-wrapper">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="iconToggle">
-                        <div class="switch-body">
-                            <span class="icon sun">🌞</span>
-                            <span class="icon moon">🌙</span>
-                        </div>
-                    </label>
+        <div class="search-container">
+            <input type="text" id="color-search" placeholder="Search DMC code, name, or hex..." />
+            <span class="search-icon">🔍</span>
+        </div>
+    </div>
+    </div>
+    <div style="overflow:scroll">
+        <div class="page">
+            <section class="main-grid">
+                <div id="grid-container">
+                    <!-- Grid renders here -->
                 </div>
-    <!--
-            <div id="active-palette" class="palette-grid"></div>
-    -->
-
+            </section>
+        </div>
+    </div>
 </main>
 
-<div id="palette-modal" class="modal hidden">
-    <div id="dmc-selector-panel">
-        <h2>Select DMC Colors</h2>
-        <input type="text" id="color-search" placeholder="Search DMC code, name, or hex..."/>
-        <div id="color-list"></div>
-        <h3>Preview Palette</h3>
-        <div id="selected-palette"></div>
-        <button id="confirm-palette" class="btn">➕ Add to Active Palette</button>
-        <button id="close-palette" class="btn">❌ Close</button>
-    </div>
-</div>
+<span class="button-title">🎨 Palette</span>
+<span class="button-help">Currently selected color symbol</span>
+
+
+<!--
+        <div id="active-palette" class="palette-grid"></div>
+-->
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
@@ -250,41 +266,41 @@
 <script src="{{ url_for('static', filename='ribbon/jquery.tooltip.min.js') }}"></script>
 
 <script type="text/javascript">
-$(document).ready(function () {
-    $('#ribbon').ribbon();
+    $(document).ready(function () {
+        $('#ribbon').ribbon();
 
-    // Enable/disable buttons
-    $('#enable-btn').click(function () {
-        $('#del-table-btn, #del-page-btn, #save-btn, #other-btn-2').enable();
-        $('#enable-btn').hide();
-        $('#disable-btn').show();
+        // Enable/disable buttons
+        $('#enable-btn').click(function () {
+            $('#del-table-btn, #del-page-btn, #save-btn, #other-btn-2').enable();
+            $('#enable-btn').hide();
+            $('#disable-btn').show();
+        });
+
+        $('#disable-btn').click(function () {
+            $('#del-table-btn, #del-page-btn, #save-btn, #other-btn-2').disable();
+            $('#disable-btn').hide();
+            $('#enable-btn').show();
+        });
+
+        // 🎨 Open palette dropdown on button click (no toggle)
+        $('#palette-dropdown-btn').click(function (e) {
+            e.stopPropagation();
+            $('#palette-dropdown').addClass('show').removeClass('hidden');
+        });
+
+        // ✖ Close dropdown manually
+        $('#close-palette-dropdown').click(function (e) {
+            e.stopPropagation();
+            $('#palette-dropdown').removeClass('show').addClass('hidden');
+        });
+
+        // Swatch click to select
+        $('#active-palette').delegate('.color-swatch', 'click', function () {
+        $('.color-swatch').removeClass('selected');
+        $(this).addClass('selected');
+        var color = $(this).css('background-color');
     });
-
-    $('#disable-btn').click(function () {
-        $('#del-table-btn, #del-page-btn, #save-btn, #other-btn-2').disable();
-        $('#disable-btn').hide();
-        $('#enable-btn').show();
     });
-
-    // 🎨 Open palette dropdown on button click (no toggle)
-    $('#palette-dropdown-btn').click(function (e) {
-        e.stopPropagation();
-        $('#palette-dropdown').addClass('show').removeClass('hidden');
-    });
-
-    // ✖ Close dropdown manually
-    $('#close-palette-dropdown').click(function (e) {
-        e.stopPropagation();
-        $('#palette-dropdown').removeClass('show').addClass('hidden');
-    });
-
-    // Swatch click to select
-    $('#active-palette').delegate('.color-swatch', 'click', function () {
-    $('.color-swatch').removeClass('selected');
-    $(this).addClass('selected');
-    var color = $(this).css('background-color');
-});
-});
 
 
 </script>

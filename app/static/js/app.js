@@ -28,19 +28,24 @@ document.querySelectorAll('input[name="tool"]').forEach(input => {
   });
 });
 
+const drawer = document.getElementById('palette-modal');
+const toggleTab = document.getElementById('drawer-toggle');
+const arrow = toggleTab.querySelector('.arrow');
+
+// Show drawer from palette button
 document.getElementById('open-palette').addEventListener('click', () => {
-  document.getElementById('palette-modal').classList.remove('hidden');
+  drawer.classList.add('show');
+  arrow.textContent = '⮞';
 });
 
-document.getElementById('close-palette').addEventListener('click', () => {
-  document.getElementById('palette-modal').classList.add('hidden');
+// Toggle drawer visibility from drawer tab
+toggleTab.addEventListener('click', () => {
+  drawer.classList.toggle('show');
+  const isOpen = drawer.classList.contains('show');
+  arrow.textContent = isOpen ?  '⮜' :  '⮞';
 });
 
-document.getElementById('palette-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'palette-modal') {
-    document.getElementById('palette-modal').classList.add('hidden');
-  }
-});
+
 document.getElementById("clear-palette").addEventListener("click", () => {
   if (!confirm("Clear all selected colors from your active palette?")) return;
 

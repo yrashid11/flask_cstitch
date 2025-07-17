@@ -1,12 +1,11 @@
 /* === Base Reset & Typography === */
-html {
+html, body {
 scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
+  height: 100%;
+  margin: 0;
+  padding:0;
+  overflow: hidden;
+  font-family: sans-serif;
 }
 
 h1, h2, h3 {
@@ -44,7 +43,6 @@ header {
 .app-layout {
   display: flex;
   min-height: calc(100vh - 80px);
-  padding: 1rem;
   gap: 2rem;
 }
 
@@ -136,47 +134,17 @@ header {
   background-color: #d32f2f;
 }
 
-/* === Modal & Palette Panels === */
-.modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
+/* ===  Palette Panels === */
 
-.modal.hidden {
-  display: none;
-}
-
-#palette-modal {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-#palette-modal.hidden {
-  display: none;
-}
-
-#dmc-selector-panel {
+dmc-selector-panel {
   background: white;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 10px;
-  width: 600px;
-  max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   position: relative;
 }
-
 #close-palette {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #eee;
-  border: none;
-  font-size: 18px;
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   cursor: pointer;
@@ -576,3 +544,72 @@ max-width: 500px;
       height: 100%;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
     }
+
+/* Ribbon stays fixed at top */
+#ribbon {
+  background-color: #eaeaea;
+  position: fixed;
+    height: var(--ribbon-height);
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height:150px;
+}
+
+/* Height of the ribbon */
+:root {
+  --ribbon-height: 145px;
+}
+
+/* Container below ribbon */
+#app-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-top: var(--ribbon-height); /* Pushes below ribbon */
+  height: calc(100vh - var(--ribbon-height));
+  overflow: hidden;
+}
+
+/* Drawer below ribbon */
+#palette-modal.drawer {
+  width: 30%;
+  background: #eff1f4;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  overflow-y: auto;
+}
+.modal.hidden {
+    transform: translateX(100%);
+}
+
+/* Visible state */
+#palette-modal.drawer.visible {
+  transform: translateX(0);
+}
+
+/* Main workspace */
+#main-content {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+#color-list .swatch-top-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px; /* optional spacing */
+}
+
+#color-list .swatch-name-box {
+  width: 100%;
+}
+
+#color-list .color-swatch{
+ display: flex;
+ flex-direction: column;
+  align-items: flex-start;
+  max-height: 50px;
+  width: 100%;
+}
+
+
